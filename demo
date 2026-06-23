@@ -1,31 +1,86 @@
-GOAL:
-Push Code To GitHub
-Build Using Jenkins
-Install Java
+# ==============================================================================
+# STEP 1: UPDATE UBUNTU PACKAGES
+# SYSTEM ACTION: Downloads the latest package lists for your OS.
+# PROCEED: Wait a few seconds for the prompt to return.
+# ==============================================================================
+sudo apt update -y
+
+# ==============================================================================
+# STEP 2: INSTALL JAVA 17 (REQUIRED BY JENKINS)
+# SYSTEM ACTION: Installs OpenJDK 17, the required runtime environment.
+# PROCEED: Wait for the installation progress bar to hit 100%.
+# ==============================================================================
 sudo apt install openjdk-17-jdk -y
-Install Git
-sudo apt install git -y
-Install Maven
-sudo apt install maven -y
-Configure Git
-git config --global user.name "YourName"
-git config --global user.email "YourEmail"
-Create SSH Key
-ssh-keygen -t ed25519 -C "YourEmail"
-Press Enter For Everything
-Show Public Key
-cat ~/.ssh/id_ed25519.pub
-GitHub
-Settings
-→ SSH Keys
-→ New SSH Key
-→ Paste Key
-→ Save
-GitHub
-New Repository
-exp6
-Create Repository
-Inside Project
-git init
-git add .
-git commit -m "fir
+
+# ==============================================================================
+# STEP 3: ADD THE JENKINS GPG REPOSITORY KEY
+# SYSTEM ACTION: Downloads and saves the official cryptographic key for security.
+# PROCEED: Move straight to the next command.
+# ==============================================================================
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://jenkins.io
+
+# ==============================================================================
+# STEP 4: ADD THE OFFICIAL JENKINS DEBIAN REPOSITORY
+# SYSTEM ACTION: Tells Ubuntu exactly where to fetch the Jenkins software.
+# PROCEED: Move straight to the next command.
+# ==============================================================================
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://jenkins.io binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# ==============================================================================
+# STEP 5: UPDATE PACKAGE LISTS AGAIN
+# SYSTEM ACTION: Refreshes Ubuntu's index so it recognizes the new Jenkins repo.
+# PROCEED: Wait a moment for it to complete.
+# ==============================================================================
+sudo apt update -y
+
+# ==============================================================================
+# STEP 6: INSTALL JENKINS
+# SYSTEM ACTION: Downloads and installs the core Jenkins platform.
+# PROCEED: Wait for the installation process to wrap up entirely.
+# ==============================================================================
+sudo apt install jenkins -y
+
+# ==============================================================================
+# STEP 7: START AND ENABLE THE JENKINS SERVICE
+# SYSTEM ACTION: Powers on Jenkins and configures it to launch if the server reboots.
+# PROCEED: Move straight to the next verification command.
+# ==============================================================================
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+# ==============================================================================
+# STEP 8: VERIFY STATUS
+# SYSTEM ACTION: Displays the service log. Look for "active (running)" in green.
+# PROCEED: Press the "q" key on your keyboard to exit this status menu!
+# ==============================================================================
+sudo systemctl status jenkins
+
+# ==============================================================================
+# STEP 9: FETCH THE ADMIN PASSWORD
+# SYSTEM ACTION: Prints your secret, one-time alphanumeric setup password.
+# PROCEED: Copy the long string of letters and numbers printed on your terminal screen.
+# ==============================================================================
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+# ==============================================================================
+# STEP 10: AWS CONSOLE INTERACTION
+# WHERE TO GO: Open your internet browser (Chrome, Firefox, Edge, Safari).
+# ACTIONS:
+#   1. Go to your AWS EC2 Console -> Instances.
+#   2. Click your running Instance -> Click the "Security" tab at the bottom.
+#   3. Click your Security Group -> Click "Edit inbound rules".
+#   4. Click "Add rule" -> Choose "Custom TCP", Port "8080", Source "0.0.0.0/0".
+#   5. Click "Save rules".
+# ==============================================================================
+
+# ==============================================================================
+# STEP 11: LAUNCH THE WEB DASHBOARD
+# WHERE TO GO: Open a new tab in your internet browser.
+# ACTIONS:
+#   1. Copy your EC2 instance's "Public IPv4 address" from your AWS console.
+#   2. Type http://<YOUR_EC2_PUBLIC_IP>:8080 into the address bar and press Enter.
+#   3. Paste the password string you copied in STEP 9 into the "Administrator password" box.
+#   4. Click "Continue".
+#   5. Click "Install suggested plugins".
+#   6. Complete the form to create your username and password, then hit "Save and Finish".
+# ==============================================================================
