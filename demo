@@ -1,0 +1,31 @@
+GOAL:
+Push Code To GitHub
+Build Using Jenkins
+Install Java
+sudo apt install openjdk-17-jdk -y
+Install Git
+sudo apt install git -y
+Install Maven
+sudo apt install maven -y
+Configure Git
+git config --global user.name "YourName"
+git config --global user.email "YourEmail"
+Create SSH Key
+ssh-keygen -t ed25519 -C "YourEmail"
+Press Enter For Everything
+Show Public Key
+cat ~/.ssh/id_ed25519.pub
+GitHub
+Settings
+→ SSH Keys
+→ New SSH Key
+→ Paste Key
+→ Save
+GitHub
+New Repository
+exp6
+Create Repository
+Inside Project
+git init
+git add .
+git commit -m "fir
