@@ -1,0 +1,419 @@
+COMMON AWS STEPS (FOR EVERY EXPERIMENT)
+AWS Console
+→ EC2
+→ Launch Instance
+→ Ubuntu 22.04
+→ t2.micro
+→ Launch
+→ Connect
+→ EC2 Instance Connect
+→ Connect
+Update System
+sudo apt update
+
+EXP-1 : MAVEN & GRADLE INSTALLATION
+GOAL:
+Install Maven and Gradle
+Install Java
+sudo apt install openjdk-17-jdk -y
+java -version
+Install Maven
+sudo apt install maven -y
+mvn -version
+Install Gradle
+sudo apt install gradle -y
+gradle -v
+PROOF:
+java -version
+mvn -version
+gradle -v
+
+EXP-2 : MAVEN PROJECT
+GOAL:
+Create Maven Project
+Compile
+Test
+Package
+Install Java
+sudo apt install openjdk-17-jdk -y
+Install Maven
+sudo apt install maven -y
+Create Project
+mvn archetype:generate
+groupId=com.example
+artifactId=MyMavenApp
+version=Enter
+package=Enter
+Y
+Enter Project
+cd MyMavenApp
+Show pom.xml
+cat pom.xml
+Compile
+mvn compile
+Test
+mvn test
+Package
+mvn package
+Show Jar
+ls target
+PROOF:
+BUILD SUCCESS
+MyMavenApp-1.0-SNAPSHOT.jar
+EXP-3 : GRADLE PROJECT
+GOAL:
+Create Gradle Project
+Build
+Run
+Install Java
+sudo apt install openjdk-17-jdk -y
+Install Gradle
+sudo apt install gradle -y
+Create Project
+mkdir HelloGradle
+cd HelloGradle
+gradle init --type java-application
+Show Build File
+cat build.gradle
+Build
+gradle build
+Run
+gradle run
+PROOF:
+BUILD SUCCESSFUL
+EXP-4 : MAVEN TO GRADLE
+GOAL:
+Build Application Using Maven
+Build Same Application Using Gradle
+Install Java
+sudo apt install openjdk-17-jdk -y
+Install Maven
+sudo apt install maven -y
+Install Gradle
+sudo apt install gradle -y
+Create Maven Project
+mvn archetype:generate
+artifactId=HelloMaven
+Y
+cd HelloMaven
+mvn package
+ls target
+cd ..
+Create Gradle Project
+mkdir HelloMavenGradle
+cd HelloMavenGradle
+gradle init --type java-application
+gradle build
+gradle run
+PROOF:
+BUILD SUCCESS
+BUILD SUCCESSFUL
+EXP-5 : JENKINS INSTALLATION
+GOAL:
+enkins
+Open DInstall Jashboard
+EXP-6 : JENKINS CI PIPELINE
+st commit"
+git branch -M main
+git remote add origin git@github.com:USERNAME/exp6.git
+git push -u origin main
+Install Jenkins
+(Use Exp-5 Steps)
+Jenkins
+Dashboard
+→ New Item
+→ Pipeline
+Paste
+pipeline {
+agent any
+stages {
+stage('Checkout') {
+steps {
+git branch: 'main',
+url: 'git@github.com:USERNAME/exp6.git'
+}
+}
+stage('Build') {
+steps {
+sh 'mvn clean package'
+}
+}
+stage('Test') {
+steps {
+sh 'mvn test'
+}
+}
+}
+}
+Save
+Build Now
+PROOF:
+Pipeline Success
+EXP-7 : ANSIBLE
+GOAL:
+Inventory
+Playbook
+Automation
+Install Java
+sudo apt install openjdk-17-jdk -y
+Install Ansible
+sudo apt install ansible -y
+Verify
+ansible --version
+Create Inventory
+nano inventory
+Paste
+[servers]
+localhost ansible_connection=local
+Save
+Create Playbook
+nano playbook.yml
+Paste
+
+hosts: servers
+tasks:
+name: Install Git
+apt:
+name: git
+state: present
+Save
+Run
+ansible-playbook -i inventory playbook.yml
+PROOF:
+changed=1
+failed=0
+EXP-8 : JENKINS + ANSIBLE
+GOAL:
+Build Using Jenkins
+Deploy Using Ansible
+Install Java
+sudo apt install openjdk-17-jdk -y
+Install Git
+sudo apt install git -y
+Install Maven
+sudo apt install maven -y
+Install Ansible
+sudo apt install ansible -y
+Install Jenkins
+(Use Exp-5)
+Create Playbook
+nano playbook.yml
+Paste
+
+hosts: localhost
+tasks:
+name: Install Git
+apt:
+name: git
+state: present
+Save
+Create Jenkins Pipeline
+Dashboard
+→ New Item
+→ Pipeline
+Paste
+pipeline {
+agent any
+stages {
+stage('Build') {
+steps {
+sh 'mvn clean package'
+}
+}
+stage('Deploy') {
+steps {
+sh 'ansible-playbook playbook.yml'
+}
+}
+}
+}
+Save
+Build Now
+PROOF:
+Build Success
+Deploy Success
+Pipeline Success
+
+EXP-10 : AZURE BUILD PIPELINE
+GOAL: GitHub Repository → Azure Build Pipeline → Build Success
+==================================================
+1.	GITHUB
+New Repository
+Name:
+exp10
+Create Repository
+==================================================
+2.	CREATE pom.xml
+Add File → Create New File
+Name:
+pom.xml
+Paste:
+
+4.0.0
+com.example
+demo
+1.0
+
+Commit Changes
+==================================================
+3.	CREATE JAVA FILE
+Add File → Create New File
+Name:
+src/main/java/App.java
+Paste:
+public class App {
+public static void main(String[] args) {
+System.out.println(“Hello World”);
+}
+}
+Commit Changes
+==================================================
+4.	VERIFY GITHUB
+exp10
+├── pom.xml
+└── src └── main └── java └── App.java
+==================================================
+5.	AZURE DEVOPS
+https://dev.azure.com
+Login
+==================================================
+6.	CREATE PROJECT
+New Project
+Name:
+Exp10
+Create
+==================================================
+7.	CREATE PIPELINE
+Pipelines
+→ New Pipeline
+==================================================
+8.	SOURCE CODE
+Where is your code?
+GitHub
+Authorize GitHub
+Select:
+exp10
+==================================================
+9.	CONFIGURE PIPELINE
+Starter Pipeline
+==================================================
+10.	REPLACE YAML
+trigger:
+•	main
+pool: vmImage: ubuntu-latest
+steps:
+•	task: Maven@3 inputs: mavenPomFile: ‘pom.xml’
+==================================================
+11.	SAVE
+Save and Run
+==================================================
+12.	RUN
+Run Pipeline
+==================================================
+EXPECTED OUTPUT
+Build Succeeded
+Green Tick
+==================================================
+PROOF
+GitHub Repository
+pom.xml visible
+App.java visible
+Azure Pipeline visible
+Build Succeeded
+
+
+EXP-11 : AZURE RELEASE PIPELINE
+GOAL:
+Build Artifact → Release → Deployment
+
+Use Same Repo
+Use Same Build Pipeline
+
+Azure DevOps
+Pipelines
+→ Releases
+
+New Release Pipeline
+
+Template
+Azure App Service Deployment
+Apply
+
+Add Artifact
+Source Type:
+Build
+Source:
+Exp10 Pipeline
+Add
+
+Save
+
+Create Release
+
+Deploy
+
+PROOF
+Release Created
+Deployment Successful
+
+EXP-12 : COMPLETE AZURE DEVOPS FLOW
+GOAL:
+GitHub → Build → Release
+
+GitHub
+exp12 Repository
+Upload:
+pom.xml
+src/main/java/App.java
+
+Azure DevOps
+Create Project
+
+Build Pipeline
+Pipelines
+→ New Pipeline
+→ GitHub
+→ Select Repo
+YAML:
+trigger:
+main
+pool:
+vmImage: ubuntu-latest
+steps:
+task: Maven@3
+inputs:
+mavenPomFile: 'pom.xml'
+Run
+
+Release Pipeline
+Releases
+→ New Release Pipeline
+Template:
+Azure App Service Deployment
+Add Artifact:
+Build Pipeline
+Save
+Create Release
+Deploy
+
+PROOF
+GitHub Repository Visible
+Build Succeeded
+Release Succeeded
+Deployment Succeeded
+
+EMERGENCY COMMANDS
+pwd
+ls
+cd folder
+cd ..
+mkdir folder
+cat file
+nano file
+java -version
+mvn -version
+gradle -v
+ansible --version
+sudo systemctl status jenkins
+sudo systemctl start jenkins
+
